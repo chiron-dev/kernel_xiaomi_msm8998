@@ -1,4 +1,5 @@
 /* Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2017 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -274,25 +275,18 @@
 	};
 
 	soc: soc { };
-
-	vendor: vendor {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		ranges = <0 0 0 0xffffffff>;
-		compatible = "simple-bus";
-	};
-
-	firmware: firmware {
+    
+    firmware: firmware {
 		android {
 			compatible = "android,firmware";
 			fstab {
 				compatible = "android,fstab";
-				vendor {
-					compatible = "android,vendor";
-					dev = "/dev/block/platform/soc/1da4000.ufshc/by-name/vendor";
+				system {
+					compatible = "android,system";
+					dev = "/dev/block/platform/soc/1da4000.ufshc/by-name/system";
 					type = "ext4";
 					mnt_flags = "ro,barrier=1,discard";
-					fsmgr_flags = "wait,slotselect";
+					fsmgr_flags = "wait";
 					status = "ok";
 				};
 			};
@@ -310,40 +304,40 @@
 			reg = <0 0x85800000 0 0x3700000>;
 		};
 
-		pil_ipa_gpu_mem: pil_ipa_gpu_region@95200000 {
+		pil_ipa_gpu_mem: pil_ipa_gpu_region@95600000 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0 0x95200000 0 0x100000>;
+			reg = <0 0x95600000 0 0x100000>;
 		};
 
-		pil_slpi_mem: pil_slpi_region@94300000 {
+		pil_slpi_mem: pil_slpi_region@94700000 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0 0x94300000 0 0xf00000>;
+			reg = <0 0x94700000 0 0xf00000>;
 		};
 
-		pil_mba_mem: pil_mba_region@94100000 {
+		pil_mba_mem: pil_mba_region@94500000 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0 0x94100000 0 0x200000>;
+			reg = <0 0x94500000 0 0x200000>;
 		};
 
-		pil_video_mem: pil_video_region@93c00000 {
+		pil_video_mem: pil_video_region@94000000 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0 0x93c00000 0 0x500000>;
+			reg = <0 0x94000000 0 0x500000>;
 		};
 
-		modem_mem: modem_region@8cc00000 {
+		modem_mem: modem_region@8d000000 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0 0x8cc00000 0 0x7000000>;
+			reg = <0 0x8d000000 0 0x7000000>;
 		};
 
 		pil_adsp_mem: pil_adsp_region@0x8b200000 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0 0x8b200000 0 0x1a00000>;
+			reg = <0 0x8b200000 0 0x1e00000>;
 		};
 
 		spss_mem: spss_region@8ab00000 { /* for SPSS-PIL */
@@ -1544,7 +1538,7 @@
 		qcom,xprt-linkid = <1>;
 		qcom,xprt-version = <1>;
 		qcom,fragmented-data;
-		qcom,dynamic-wakeup-source;
+        qcom,dynamic-wakeup-source;
 	};
 
 	qcom,spcom {
@@ -1799,6 +1793,7 @@
 			snps,has-lpm-erratum;
 			snps,hird-threshold = /bits/ 8 <0x10>;
 			snps,num-gsi-evt-buffs = <0x3>;
+			maximum-speed = "high-speed";
 		};
 
 		qcom,usbbam@a904000 {
@@ -1845,7 +1840,7 @@
 		vdda18-supply = <&pm8998_l12>;
 		vdda33-supply = <&pm8998_l24>;
 		qcom,vdd-voltage-level = <0 880000 880000>;
-		qcom,vdda33-voltage-level = <2400000 3088000 3088000>;
+        qcom,vdda33-voltage-level = <2400000 3088000 3088000>;
 		qcom,qusb-phy-init-seq =
 				/* <value reg_offset> */
 					<0x80 0x0
@@ -2318,10 +2313,14 @@
 			qcom,sensor-name = "quiet_therm";
 		};
 		sensor_information28: qcom,sensor-information-28 {
+			qcom,sensor-type =  "adc";
+			qcom,sensor-name = "xo_therm";
+		};
+		sensor_information29: qcom,sensor-information-29 {
 			qcom,sensor-type = "llm";
 			qcom,sensor-name = "limits_sensor-01";
 		};
-		sensor_information29: qcom,sensor-information-29 {
+		sensor_information30: qcom,sensor-information-30 {
 			qcom,sensor-type = "llm";
 			qcom,sensor-name = "limits_sensor-02";
 		};
@@ -2365,10 +2364,10 @@
 		hyplog-address-offset = <0x410>; /* 0x066BFB30 */
 		hyplog-size-offset = <0x414>;    /* 0x066BFB34 */
 	};
-
-	qcom_msmhdcp: qcom,msm_hdcp {
-		compatible = "qcom,msm-hdcp";
-	};
+    
+    qcom_hdcp: qcom,msm_hdcp {
+        compatible = "qcom,msm-hdcp";
+    };
 
 	qcom_crypto: qcrypto@1DE0000 {
 		compatible = "qcom,qcrypto";
@@ -2657,7 +2656,7 @@
 					0x260 0x10 0x00
 					0x28c 0x06 0x00
 					0x504 0x03 0x00
-					0x500 0x10 0x00
+					0x500 0x1c 0x00
 					0x50c 0x14 0x00
 					0x4d4 0x0a 0x00
 					0x4d8 0x04 0x00
@@ -2675,11 +2674,11 @@
 					0x9ac 0x00 0x00
 					0x8a0 0x01 0x00
 					0x9e0 0x00 0x00
-					0x9dc 0x20 0x00
+					0x9dc 0x01 0x00
 					0x9a8 0x00 0x00
 					0x8a4 0x01 0x00
 					0x8a8 0x73 0x00
-					0x9d8 0xaa 0x00
+					0x9d8 0x99 0x00
 					0x9b0 0x03 0x00
 					0x804 0x03 0x00
 					0x800 0x00 0x00
@@ -2712,7 +2711,7 @@
 
 		qcom,ep-latency = <10>;
 
-		qcom,boot-option = <0x1>;
+		qcom,boot-option = <1>;
 
 		linux,pci-domain = <0>;
 
@@ -2849,8 +2848,8 @@
 		reg = <0x17817000 0x1000>;
 		reg-names = "wdt-base";
 		interrupts = <0 3 0>, <0 4 0>;
-		qcom,bark-time = <11000>;
-		qcom,pet-time = <10000>;
+		qcom,bark-time = <20000>;
+		qcom,pet-time = <15000>;
 		qcom,ipi-ping;
 		qcom,wakeup-enable;
 		qcom,scandump-size = <0x40000>;
@@ -3065,7 +3064,7 @@
 		reg = <0x780000 0x1000>;
 		qcom,low-hyst-temp = <100>;
 		qcom,high-hyst-temp = <100>;
-		qcom,polling-interval = <100>;
+		qcom,polling-interval = <50>;
 
 		ea0: ea0 {
 			sensor = <&sensor_information1>;
@@ -3104,10 +3103,10 @@
 	msm_ath10k_wlan: qcom,msm_ath10k_wlan {
 		status = "disabled";
 		compatible = "qcom,wcn3990-wifi";
-		reg = <0x18800000 0x800000>;
-		reg-names = "membase";
-		clocks = <&clock_gcc clk_rf_clk2_pin>;
-		clock-names = "cxo_ref_clk_pin";
+        reg = <0x18800000 0x800000>;
+        reg-names = "membase";
+        clocks = <0x38 0xa7c5602a>;
+        clock-names = "cxo_ref_clk_pin";
 		interrupts =
 			<0 413 0 /* CE0 */ >,
 			<0 414 0 /* CE1 */ >,
@@ -3121,12 +3120,12 @@
 			<0 423 0 /* CE9 */ >,
 			<0 424 0 /* CE10 */ >,
 			<0 425 0 /* CE11 */ >;
-		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
-		vdd-1.8-xo-supply = <&pm8998_l7_pin_ctrl>;
-		vdd-1.3-rfa-supply = <&pm8998_l17_pin_ctrl>;
-		vdd-3.3-ch0-supply = <&pm8998_l25_pin_ctrl>;
-		qcom,vdd-0.8-cx-mx-config = <800000 800000>;
-		qcom,vdd-3.3-ch0-config = <3104000 3312000>;
+        vdd-0.8-cx-mx-supply = <0xc1>;
+        vdd-1.8-xo-supply = <0xc2>;
+        vdd-1.3-rfa-supply = <0xc3>;
+        vdd-3.3-ch0-supply = <0xc4>;
+        qcom,vdd-0.8-cx-mx-config = <0xc3500 0xc3500>;
+        qcom,vdd-3.3-ch0-config = <0x2f5d00 0x328980>;
 	};
 
 	qcom,icnss@18800000 {
@@ -3235,7 +3234,7 @@
 		qcom,smmu-fast-map;
 		qcom,smmu-coherent;
 		qcom,smmu-mapping = <0x20000000 0xe0000000>;
-		qcom,keep-radio-on-during-sleep;
+        qcom,keep-radio-on-during-sleep;
 		status = "disabled";
 	};
 
@@ -3293,34 +3292,53 @@
 };
 
 &gdsc_venus {
+	clock-names = "bus_clk", "maxi_clk", "core_clk";
+	clocks = <&clock_mmss clk_mmss_video_axi_clk>,
+		<&clock_mmss clk_mmss_video_maxi_clk>,
+		<&clock_mmss clk_mmss_video_core_clk>;
 	status = "ok";
 };
 
 &gdsc_venus_core0 {
+	clock-names = "core0_clk";
+	clocks = <&clock_mmss clk_mmss_video_subcore0_clk>;
 	status = "ok";
 	qcom,support-hw-trigger;
 };
 
 &gdsc_venus_core1 {
+	clock-names = "core1_clk";
+	clocks = <&clock_mmss clk_mmss_video_subcore1_clk>;
 	status = "ok";
 	qcom,support-hw-trigger;
 };
 
 &gdsc_camss_top {
+	clock-names = "bus_clk", "vfe_axi";
+	clocks = <&clock_mmss clk_mmss_camss_cpp_axi_clk>,
+		<&clock_mmss clk_mmss_camss_vfe_vbif_axi_clk>;
 	status = "ok";
 };
 
 &gdsc_vfe0 {
+	clock-names = "core0_clk" , "core0_stream_clk";
+	clocks = <&clock_mmss clk_mmss_camss_vfe0_clk>,
+		<&clock_mmss clk_mmss_camss_vfe0_stream_clk>;
 	parent-supply = <&gdsc_camss_top>;
 	status = "ok";
 };
 
 &gdsc_vfe1 {
+	clock-names = "core1_clk" , "core1_stream_clk";
+	clocks = <&clock_mmss clk_mmss_camss_vfe1_clk>,
+		<&clock_mmss clk_mmss_camss_vfe1_stream_clk>;
 	parent-supply = <&gdsc_camss_top>;
 	status = "ok";
 };
 
 &gdsc_cpp {
+	clock-names = "core_clk";
+	clocks = <&clock_mmss clk_mmss_camss_cpp_clk>;
 	parent-supply = <&gdsc_camss_top>;
 	qcom,support-hw-trigger;
 	status = "ok";
