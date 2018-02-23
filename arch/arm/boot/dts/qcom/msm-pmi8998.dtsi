@@ -425,7 +425,7 @@
 			qcom,supported-sizes = <6>, <9>;
 			qcom,ramp-index = <1>;
 			#pwm-cells = <2>;
-			status = "disabled";
+			status = "okay";
 		};
 
 		pmi8998_pwm_3: pwm@b300 {
@@ -624,7 +624,6 @@
 			qcom,fs-curr-ua = <25000>;
 			qcom,cons-sync-write-delay-us = <1000>;
 			qcom,led-strings-list = [00 01 02 03];
-            qcom,en-ext-pfet-sc-pro;
 			qcom,pmic-revid = <&pmi8998_revid>;
 			qcom,loop-auto-gm-en;
             qcom,auto-calibration-enable;
