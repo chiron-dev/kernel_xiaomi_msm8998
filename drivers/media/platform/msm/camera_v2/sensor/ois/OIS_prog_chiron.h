@@ -9,7 +9,7 @@
 #ifndef OIS_PROG_H
 #define OIS_PROG_H
 
-const OIS_UBYTE DOWNLOAD_BIN[] = {
+const	OIS_UBYTE	DOWNLOAD_BIN[] = {	/* DOWNLOAD10d_SEMCO_Xiaomi_D5 20170616.bin*/
 	0x00,
 	0x2F,
 	0x65,

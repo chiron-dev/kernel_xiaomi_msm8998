@@ -1,4 +1,5 @@
 /* Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -95,11 +96,6 @@ static void msm_actuator_parse_i2c_params(struct msm_actuator_ctrl_t *a_ctrl,
 
 	if (a_ctrl == NULL) {
 		pr_err("failed. actuator ctrl is NULL");
-		return;
-	}
-
-	if (a_ctrl->i2c_reg_tbl == NULL) {
-		pr_err("failed. i2c reg tabl is NULL");
 		return;
 	}
 
@@ -715,9 +711,6 @@ static int32_t msm_actuator_move_focus(
 			CDBG("[OIS] origin_total %d target_margin %d", origin_total, target_margin);
 			CDBG("[OIS] target_step_pos=%d total_steps=%d ois distance=%d \n", target_step_pos, a_ctrl->total_steps, distance);
 		}
-		distance = distance < 10 ? 10 : distance;
-		msm_ois_shift_gain(distance);
-		CDBG("[OIS] target_step_pos=%d total_steps=%d ois distance=%d \n", target_step_pos, a_ctrl->total_steps, distance);
 	}
 	CDBG("Exit\n");
 
@@ -1397,11 +1390,9 @@ static int32_t msm_actuator_set_param(struct msm_actuator_ctrl_t *a_ctrl,
 
 	if (copy_from_user(&a_ctrl->region_params,
 		(void *)set_info->af_tuning_params.region_params,
-		a_ctrl->region_size * sizeof(struct region_params_t))) {
-		a_ctrl->total_steps = 0;
-		pr_err("Error copying region_params\n");
+		a_ctrl->region_size * sizeof(struct region_params_t)))
 		return -EFAULT;
-	}
+
 	if (a_ctrl->act_device_type == MSM_CAMERA_PLATFORM_DEVICE) {
 		cci_client = a_ctrl->i2c_client.cci_client;
 		cci_client->sid =
@@ -1481,6 +1472,11 @@ static int32_t msm_actuator_set_param(struct msm_actuator_ctrl_t *a_ctrl,
 				a_ctrl->i2c_reg_tbl = NULL;
 				pr_err("Error actuator_init_focus\n");
 				return -EFAULT;
+			} else if (rc == 1) {
+				kfree(a_ctrl->i2c_reg_tbl);
+				a_ctrl->i2c_reg_tbl = NULL;
+				pr_err("actuator_init_focus return 1\n");
+				return rc;
 			}
 		}
 	}
@@ -2061,7 +2057,7 @@ static int32_t msm_actuator_platform_probe(struct platform_device *pdev)
 	}
 	rc = msm_sensor_driver_get_gpio_data(&(msm_actuator_t->gconf),
 		(&pdev->dev)->of_node);
-	if (rc < 0) {
+	if (rc <= 0) {
 		pr_err("%s: No/Error Actuator GPIOs\n", __func__);
 	} else if (!msm_actuator_t->gconf) {
 		pr_err("%s: %d: Actuator no GPIO control\n", __func__, __LINE__);

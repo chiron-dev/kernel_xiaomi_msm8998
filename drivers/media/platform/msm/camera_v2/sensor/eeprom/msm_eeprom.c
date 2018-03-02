@@ -1,4 +1,5 @@
 /* Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -1603,6 +1604,7 @@ void get_eeprom_name(uint8_t index, char *name)
 EXPORT_SYMBOL(get_eeprom_name);
 EXPORT_SYMBOL(eeprom_name_count);
 
+/* compatible eeprom map for sagit P3 & P2 */
 int get_back_sensor_module_invalid(void)
 {
 	if (back_sensor_module_invalid) {
@@ -1629,6 +1631,7 @@ static int msm_eeprom_platform_probe(struct platform_device *pdev)
 	struct msm_eeprom_board_info *eb_info = NULL;
 	struct device_node *of_node = pdev->dev.of_node;
 	struct msm_camera_power_ctrl_t *power_info = NULL;
+
 
 	CDBG("%s E\n", __func__);
 
@@ -1709,7 +1712,7 @@ static int msm_eeprom_platform_probe(struct platform_device *pdev)
 
 	rc = of_property_read_string(of_node, "qcom,eeprom-name",
 		&eb_info->eeprom_name);
-	CDBG("%s qcom,eeprom-name %s, rc %d\n", __func__,
+	pr_err("%s qcom,eeprom-name %s, rc %d\n", __func__,
 		eb_info->eeprom_name, rc);
 	if (rc < 0) {
 		pr_err("%s failed %d\n", __func__, __LINE__);
@@ -1743,7 +1746,7 @@ static int msm_eeprom_platform_probe(struct platform_device *pdev)
 			e_ctrl->i2c_freq_mode = 0;
 		}
 		eb_info->i2c_slaveaddr = temp;
-		CDBG("qcom,slave-addr = 0x%X\n", eb_info->i2c_slaveaddr);
+		pr_err("qcom,slave-addr = 0x%X\n", eb_info->i2c_slaveaddr);
 		eb_info->i2c_freq_mode = e_ctrl->i2c_freq_mode;
 		cci_client->i2c_freq_mode = e_ctrl->i2c_freq_mode;
 		cci_client->sid = eb_info->i2c_slaveaddr >> 1;

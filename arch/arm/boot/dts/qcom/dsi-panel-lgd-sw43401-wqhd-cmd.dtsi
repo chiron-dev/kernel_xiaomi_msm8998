@@ -1,5 +1,5 @@
 /* Copyright (c) 2015, The Linux Foundation. All rights reserved.
- * Copyright (C) 2017 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -28,9 +28,9 @@
 		qcom,mdss-dsi-stream = <0>;
 		qcom,mdss-dsi-panel-width = <1440>;
 		qcom,mdss-dsi-panel-height = <2560>;
-		qcom,mdss-dsi-h-front-porch = <120>;
-		qcom,mdss-dsi-h-back-porch = <120>;
-		qcom,mdss-dsi-h-pulse-width = <16>;
+		qcom,mdss-dsi-h-front-porch = <144>;
+		qcom,mdss-dsi-h-back-porch = <144>;
+		qcom,mdss-dsi-h-pulse-width = <64>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
 		qcom,mdss-dsi-v-back-porch = <48>;
 		qcom,mdss-dsi-v-front-porch = <40>;
@@ -44,24 +44,17 @@
 		qcom,mdss-dsi-underflow-color = <0xff>;
 		qcom,mdss-dsi-border-color = <0>;
 		qcom,mdss-dsi-on-command = [
-				15 01 00 00 14 00 02 B0 5A
+				15 01 00 00 00 00 02 B0 5A
+				39 01 00 00 00 00 06 f3 13 01 07 00 31
+				05 01 00 00 78 00 02 11 00
 				39 01 00 00 00 00 03 51 00 00  /* b3 */
 				15 01 00 00 00 00 02 53 20
-				15 01 00 00 00 00 02 55 0C
+				15 01 00 00 00 00 02 55 00
 				05 01 00 00 00 00 02 35 00
-				15 01 00 00 00 00 02 FA 16
-				05 01 00 00 14 00 02 11 00
-				15 01 00 00 14 00 02 B0 5A
-				39 01 00 00 00 00 07 B1 8A FF 4A 14 14 14
-				39 01 00 00 00 00 0C B2 3D 41 02 80 FF FF 15 00 00 00 00
-				39 01 00 00 00 00 06 B3 00 08 00 00 00
-				39 01 00 00 00 00 0e B4 21 12 81 00 ff 00 78 00 ff 80 00 68 02
-				39 01 00 00 00 00 0e B5 9a 80 00 a0 05 00 0a d0 02 00 05 d0 02
-				39 01 00 00 00 00 0e B6 a6 89 0a c0 20 14 00 10 00 00 18 f0 10
-				39 01 00 00 00 00 03 B7 33 A6
-				39 01 00 00 0a 00 03 D3 24 0C
-				15 01 00 00 01 00 02 B0 00
-				05 01 00 00 78 00 02 29 00
+				15 01 00 00 00 00 02 B0 5A
+				15 01 00 00 00 00 02 B2 5D
+				39 01 00 00 00 00 03 B3 00 00
+				05 01 00 00 05 00 02 29 00
 				];
 		qcom,mdss-dsi-off-command = [
 				05 01 00 00 02 00 02 28 00
@@ -77,19 +70,79 @@
 		qcom,mdss-dsi-lane-1-state;
 		qcom,mdss-dsi-lane-2-state;
 		qcom,mdss-dsi-lane-3-state;
-		qcom,mdss-dsi-panel-timings = [00 15 05 05 08 0d 05 05 04 03 04 00];
+		qcom,mdss-dsi-panel-timings = [00 18 05 05 09 0f 05 06 04 03 04 00];
 		qcom,mdss-dsi-t-clk-post = <0x05>;
 		qcom,mdss-dsi-t-clk-pre = <0x1b>;
-		qcom,mdss-dsi-bl-min-level = <10>;
+		qcom,mdss-dsi-bl-min-level = <1>;
 		qcom,mdss-dsi-bl-max-level = <255>;
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
 		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
-		qcom,mdss-dsi-reset-sequence = <1 20>, <0 10>, <1 100>;
-		qcom,mdss-pan-physical-width-dimension = <64>;
-		qcom,mdss-pan-physical-height-dimension = <114>;
+		qcom,mdss-dsi-reset-sequence = <1 10>, <0 1>, <1 25>;
+		qcom,mdss-pan-physical-width-dimension = <68>;
+		qcom,mdss-pan-physical-height-dimension = <121>;
+		qcom,mdss-dsi-hor-line-idle =  <0 1440 512>;
 		qcom,mdss-dsi-tx-eot-append;
+		qcom,esd-check-enabled;
+		qcom,mdss-dsi-panel-status-check-mode = "reg_multi_read";
+		qcom,mdss-dsi-panel-status-command = [
+				06 01 00 00 00 00 02 0A 9c];
+		qcom,mdss-dsi-panel-status-command-state = "dsi_lp_mode";
+		qcom,mdss-dsi-panel-orientation = "180";
 		qcom,panel-supply-entries = <&dsi_panel_pwr_supply_amoled>;
+		qcom,dispparam-enabled;
+		qcom,mdss-dsi-aod-mode;
+		qcom,mdss-dsi-aodon-command = [
+				05 01 00 00 00 00 02 28 00
+				39 01 00 00 00 00 03 51 00 00
+				15 01 00 00 00 00 02 53 20
+				15 01 00 00 01 00 02 B0 5A
+				15 01 00 00 01 00 02 B1 8E
+				39 01 00 00 00 00 08 E1 00 63 03 83 0F 00 00
+				39 01 00 00 00 00 0a E2 06 D2 F4 80 80 80 5C 5C 5C
+				39 01 00 00 00 00 04 E5 91 E0 91
+				39 01 00 00 3c 00 08 E9 26 02 06 82 02 06 82
+				15 01 00 00 00 00 02 B8 26
+				05 01 00 00 05 00 02 29 00
+		];
+		qcom,mdss-dsi-aodon-command-state = "dsi_lp_mode";
+		qcom,mdss-dsi-aodoff-command = [
+				05 01 00 00 00 00 02 28 00
+				05 01 00 00 64 00 02 10 00
+				15 01 00 00 00 00 02 B0 5A
+				39 01 00 00 00 00 06 f3 13 01 07 00 31
+				05 01 00 00 78 00 02 11 00
+				39 01 00 00 00 00 03 51 00 00
+				15 01 00 00 00 00 02 53 20
+				15 01 00 00 00 00 02 55 0c
+				05 01 00 00 78 00 02 35 00
+				15 01 00 00 01 00 02 B0 5A
+				15 01 00 00 01 00 02 B2 5D
+				39 01 00 00 00 00 03 B3 00 00
+				05 01 00 00 05 00 02 29 00
+			];
+		qcom,mdss-dsi-aodoff-command-state = "dsi_lp_mode";
+		qcom,mdss-dsi-vr-on-command = [
+				15 01 00 00 00 00 02 B0 5A
+				39 01 00 00 00 00 04 E8 0E 11 06
+				39 01 00 00 00 00 08 E9 26 27 F0 30 27 F0 30
+				39 01 00 00 00 00 03 51 FF C0];
+		qcom,mdss-dsi-vr-on-command-state = "dsi_lp_mode";
+		qcom,mdss-dsi-vr-off-command = [
+				05 01 00 00 00 00 02 28 00
+				05 01 00 00 64 00 02 10 00
+				15 01 00 00 00 00 02 B0 5A
+				39 01 00 00 00 00 06 f3 13 01 07 00 31
+				05 01 00 00 78 00 02 11 00
+				39 01 00 00 00 00 03 51 64 00
+				15 01 00 00 00 00 02 53 20
+				15 01 00 00 00 00 02 55 0c
+				05 01 00 00 78 00 02 35 00
+				15 01 00 00 01 00 02 B0 5A
+				15 01 00 00 01 00 02 B2 5D
+				39 01 00 00 00 00 03 B3 00 00
+				05 01 00 00 05 00 02 29 00];
+		qcom,mdss-dsi-vr-off-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-te-pin-select = <1>;
 		qcom,mdss-dsi-te-dcs-command = <1>;
 		qcom,mdss-dsi-te-check-enable;
@@ -99,7 +152,8 @@
 		qcom,compression-mode = "dsc";
 		qcom,config-select = <&dsi_lgd_dsc_cmd_config0>;
 		dsi_lgd_dsc_cmd_config0: config0 {
-			qcom,mdss-dsc-encoders = <1>;
+			qcom,lm-split = <720 720>;
+			qcom,mdss-dsc-encoders = <2>;
 			qcom,mdss-dsc-slice-height = <1280>;
 			qcom,mdss-dsc-slice-width = <720>;
 			qcom,mdss-dsc-slice-per-pkt = <2>;

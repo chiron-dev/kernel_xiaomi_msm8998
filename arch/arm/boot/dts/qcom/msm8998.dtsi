@@ -1,5 +1,5 @@
 /* Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
- * Copyright (C) 2017 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -275,12 +275,27 @@
 	};
 
 	soc: soc { };
-    
-    firmware: firmware {
+
+	vendor: vendor {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0 0 0 0xffffffff>;
+		compatible = "simple-bus";
+	};
+
+	firmware: firmware {
 		android {
 			compatible = "android,firmware";
 			fstab {
 				compatible = "android,fstab";
+				vendor {
+					compatible = "android,system";
+					dev = "/dev/block/platform/soc/1da4000.ufshc/by-name/cust";
+					type = "ext4";
+					mnt_flags = "ro,barrier=1,discard";
+					fsmgr_flags = "wait";
+					status = "ok";
+				};
 				system {
 					compatible = "android,system";
 					dev = "/dev/block/platform/soc/1da4000.ufshc/by-name/system";
@@ -2364,10 +2379,10 @@
 		hyplog-address-offset = <0x410>; /* 0x066BFB30 */
 		hyplog-size-offset = <0x414>;    /* 0x066BFB34 */
 	};
-    
-    qcom_hdcp: qcom,msm_hdcp {
-        compatible = "qcom,msm-hdcp";
-    };
+
+	qcom_msmhdcp: qcom,msm_hdcp {
+		compatible = "qcom,msm-hdcp";
+	};
 
 	qcom_crypto: qcrypto@1DE0000 {
 		compatible = "qcom,qcrypto";
@@ -2656,7 +2671,7 @@
 					0x260 0x10 0x00
 					0x28c 0x06 0x00
 					0x504 0x03 0x00
-					0x500 0x1c 0x00
+					0x500 0x10 0x00
 					0x50c 0x14 0x00
 					0x4d4 0x0a 0x00
 					0x4d8 0x04 0x00
@@ -2674,11 +2689,11 @@
 					0x9ac 0x00 0x00
 					0x8a0 0x01 0x00
 					0x9e0 0x00 0x00
-					0x9dc 0x01 0x00
+					0x9dc 0x20 0x00
 					0x9a8 0x00 0x00
 					0x8a4 0x01 0x00
 					0x8a8 0x73 0x00
-					0x9d8 0x99 0x00
+					0x9d8 0xaa 0x00
 					0x9b0 0x03 0x00
 					0x804 0x03 0x00
 					0x800 0x00 0x00
@@ -2711,7 +2726,7 @@
 
 		qcom,ep-latency = <10>;
 
-		qcom,boot-option = <1>;
+		qcom,boot-option = <0x1>;
 
 		linux,pci-domain = <0>;
 
@@ -3103,10 +3118,10 @@
 	msm_ath10k_wlan: qcom,msm_ath10k_wlan {
 		status = "disabled";
 		compatible = "qcom,wcn3990-wifi";
-        reg = <0x18800000 0x800000>;
-        reg-names = "membase";
-        clocks = <0x38 0xa7c5602a>;
-        clock-names = "cxo_ref_clk_pin";
+		reg = <0x18800000 0x800000>;
+		reg-names = "membase";
+		clocks = <&clock_gcc clk_rf_clk2_pin>;
+		clock-names = "cxo_ref_clk_pin";
 		interrupts =
 			<0 413 0 /* CE0 */ >,
 			<0 414 0 /* CE1 */ >,
@@ -3120,12 +3135,12 @@
 			<0 423 0 /* CE9 */ >,
 			<0 424 0 /* CE10 */ >,
 			<0 425 0 /* CE11 */ >;
-        vdd-0.8-cx-mx-supply = <0xc1>;
-        vdd-1.8-xo-supply = <0xc2>;
-        vdd-1.3-rfa-supply = <0xc3>;
-        vdd-3.3-ch0-supply = <0xc4>;
-        qcom,vdd-0.8-cx-mx-config = <0xc3500 0xc3500>;
-        qcom,vdd-3.3-ch0-config = <0x2f5d00 0x328980>;
+		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
+		vdd-1.8-xo-supply = <&pm8998_l7_pin_ctrl>;
+		vdd-1.3-rfa-supply = <&pm8998_l17_pin_ctrl>;
+		vdd-3.3-ch0-supply = <&pm8998_l25_pin_ctrl>;
+		qcom,vdd-0.8-cx-mx-config = <800000 800000>;
+		qcom,vdd-3.3-ch0-config = <3104000 3312000>;
 	};
 
 	qcom,icnss@18800000 {
@@ -3234,7 +3249,7 @@
 		qcom,smmu-fast-map;
 		qcom,smmu-coherent;
 		qcom,smmu-mapping = <0x20000000 0xe0000000>;
-        qcom,keep-radio-on-during-sleep;
+		qcom,keep-radio-on-during-sleep;
 		status = "disabled";
 	};
 
@@ -3379,6 +3394,7 @@
 #include "msm8998-gpu.dtsi"
 #include "msm8998-pinctrl.dtsi"
 #include "msm-audio-lpass.dtsi"
+/*#include "sagit-msmcobalt-audio.dtsi"*/
 #include "msm8998-mdss.dtsi"
 #include "msm8998-mdss-pll.dtsi"
 #include "msm-rdbg.dtsi"
